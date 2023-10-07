@@ -6,7 +6,7 @@ OBJS = $(SRCS:.c=.o)
 
 FLAGS = -Wall -Wextra -Werror -pthread
 
-all: $(NAME) $(BONUS)
+all: $(NAME)
 
 .PHONY: all, fclean, re
 
