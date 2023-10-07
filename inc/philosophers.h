@@ -6,7 +6,7 @@
 /*   By: hlindeza <hlindeza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 10:17:33 by hlindeza          #+#    #+#             */
-/*   Updated: 2023/10/06 18:03:17 by hlindeza         ###   ########.fr       */
+/*   Updated: 2023/10/07 14:55:28 by hlindeza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void					check_args(int argc, char **argv);
 int						is_dead(t_philo *philo);
 
 // aux_functions.c
-int						ft_atoi(char *str);
+long					ft_atoi(char *str);
 size_t					get_time(void);
 void					destroy_all(t_geral *geral);
 void					print_message(size_t time, char *str, t_philo *philo);

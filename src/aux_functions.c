@@ -6,13 +6,13 @@
 /*   By: hlindeza <hlindeza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 10:17:18 by hlindeza          #+#    #+#             */
-/*   Updated: 2023/10/06 18:00:55 by hlindeza         ###   ########.fr       */
+/*   Updated: 2023/10/07 14:55:15 by hlindeza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philosophers.h"
 
-int	ft_atoi(char *str)
+long	ft_atoi(char *str)
 {
 	long	i;
 	long	res;

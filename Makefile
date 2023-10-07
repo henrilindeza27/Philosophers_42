@@ -4,7 +4,7 @@ NAME = philo
 SRCS = $(wildcard src/*.c)
 OBJS = $(SRCS:.c=.o)
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -pthread
 
 all: $(NAME) $(BONUS)
 
