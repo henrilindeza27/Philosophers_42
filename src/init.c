@@ -6,7 +6,7 @@
 /*   By: hlindeza <hlindeza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/24 16:10:02 by hlindeza          #+#    #+#             */
-/*   Updated: 2023/10/11 01:05:19 by hlindeza         ###   ########.fr       */
+/*   Updated: 2023/10/11 20:33:22 by hlindeza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ int	check_args(t_geral *geral, char **argv)
 	geral->time_to_eat = ft_atoi(argv[3]);
 	geral->time_to_sleep = ft_atoi(argv[4]);
 	geral->flag = 1;
-	geral->locked = 0;
 	pthread_mutex_init(&geral->w8, NULL);
 	pthread_mutex_init(&geral->write, NULL);
 	pthread_mutex_init(&geral->eating, NULL);

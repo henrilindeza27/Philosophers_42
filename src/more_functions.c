@@ -6,7 +6,7 @@
 /*   By: hlindeza <hlindeza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/24 16:10:29 by hlindeza          #+#    #+#             */
-/*   Updated: 2023/10/11 01:05:18 by hlindeza         ###   ########.fr       */
+/*   Updated: 2023/10/11 20:32:41 by hlindeza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static void	check_time_to_die(t_geral *geral)
 		time = get_time();
 		if ((time - geral->philos[i].last_meal) >= geral->time_to_die)
 		{
-			print_message("died", &geral->philos[i], 0);
+			print_message("died", &geral->philos[i]);
 			pthread_mutex_lock(&geral->eating);
 			geral->flag = 0;
 			pthread_mutex_unlock(&geral->eating);

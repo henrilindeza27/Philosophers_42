@@ -6,7 +6,7 @@
 /*   By: hlindeza <hlindeza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/24 16:11:29 by hlindeza          #+#    #+#             */
-/*   Updated: 2023/10/11 01:05:21 by hlindeza         ###   ########.fr       */
+/*   Updated: 2023/10/11 20:33:17 by hlindeza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,6 @@ void	destroy_all(t_geral *geral)
 	i = -1;
 	while (++i < geral->nbr_of_philos)
 		pthread_mutex_destroy(&geral->forks[i]);
-	if (geral->locked)
-		pthread_mutex_unlock(&geral->write);
 	pthread_mutex_destroy(&geral->w8);
 	pthread_mutex_destroy(&geral->write);
 	pthread_mutex_destroy(&geral->eating);
@@ -74,7 +72,7 @@ void	ft_usleep(size_t time)
 	}
 }
 
-void	print_message(char *str, t_philo *philo, int f)
+void	print_message(char *str, t_philo *philo)
 {
 	size_t	time;
 
@@ -83,8 +81,5 @@ void	print_message(char *str, t_philo *philo, int f)
 	pthread_mutex_lock(&philo->geral->write);
 	time = get_time();
 	printf("%zu %d %s\n", time - philo->geral->start_time, philo->id, str);
-	if (f)
-		pthread_mutex_unlock(&philo->geral->write);
-	else
-		philo->geral->locked = 1;
+	pthread_mutex_unlock(&philo->geral->write);
 }

@@ -6,7 +6,7 @@
 /*   By: hlindeza <hlindeza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/24 16:12:43 by hlindeza          #+#    #+#             */
-/*   Updated: 2023/10/11 01:05:20 by hlindeza         ###   ########.fr       */
+/*   Updated: 2023/10/11 20:33:42 by hlindeza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ void	*philo(void *arg)
 	philo = (t_philo *)arg;
 	if (philo->geral->nbr_of_philos == 1)
 	{
-		print_message("has taken a fork", philo, 1);
+		print_message("has taken a fork", philo);
 		ft_usleep(philo->geral->time_to_die);
 	}
-	if (philo->geral->nbr_of_philos > 1 && philo->id % 2)
-		ft_usleep(40);
 	while (check_flag(philo->geral))
 	{
 		if (philo->id % 2)
