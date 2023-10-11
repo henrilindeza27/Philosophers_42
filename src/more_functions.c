@@ -5,60 +5,69 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hlindeza <hlindeza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/06 17:58:12 by hlindeza          #+#    #+#             */
-/*   Updated: 2023/10/06 17:58:21 by hlindeza         ###   ########.fr       */
+/*   Created: 2023/09/24 16:10:29 by hlindeza          #+#    #+#             */
+/*   Updated: 2023/10/11 00:58:18 by hlindeza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/philosophers.h"
+#include "../inc/philosopher.h"
 
-void	ft_error(char *txt)
+int	check_flag(t_geral *geral)
 {
-	printf("%s\n", txt);
-	exit(1);
+	int	i;
+
+	i = 1;
+	pthread_mutex_lock(&geral->eating);
+	if (geral->flag == 0)
+		i = 0;
+	pthread_mutex_unlock(&geral->eating);
+	return (i);
 }
 
-void	*philo(void *arg)
+static void	check_eatean(t_geral *geral)
 {
-	t_philo	*philo;
+	int	i;
 
-	philo = (t_philo *)arg;
-	philo->last_meal = get_time();
-	if (philo->id % 2 == 0)
-		usleep(50);
-	if (philo->p_geral->nbr_of_philos == 1)
-		eat(philo);
-	while (!is_dead(philo))
-	{
-		take_forks(philo);
-		eat(philo);
-		ft_sleep(philo);
-		think(philo);
-	}
-	return (NULL);
+	i = 0;
+	pthread_mutex_lock(&geral->w8);
+	while (geral->nbr_of_meals && i < geral->nbr_of_philos
+		&& geral->philos[i].meals_eaten >= geral->nbr_of_meals)
+		i++;
+	pthread_mutex_lock(&geral->eating);
+	if (i >= geral->nbr_of_philos)
+		geral->flag = 0;
+	pthread_mutex_unlock(&geral->eating);
+	pthread_mutex_unlock(&geral->w8);
 }
 
-void	aux_eat(t_philo *philo)
+static void	check_time_to_die(t_geral *geral)
 {
+	int		i;
 	size_t	time;
 
-	time = get_time();
-	while ((get_time() - time) < philo->time_to_eat)
+	i = -1;
+	while (++i < geral->nbr_of_philos && check_flag(geral))
 	{
-		if (is_dead(philo))
+		pthread_mutex_lock(&geral->w8);
+		time = get_time();
+		if ((time - geral->philos[i].last_meal) >= geral->time_to_die)
 		{
-			pthread_mutex_unlock(philo->left_fork);
-			pthread_mutex_unlock(philo->right_fork);
-			return ;
+			print_message("died", &geral->philos[i], 0);
+			pthread_mutex_lock(&geral->eating);
+			geral->flag = 0;
+			pthread_mutex_unlock(&geral->eating);
 		}
-		usleep(1);
+		pthread_mutex_unlock(&geral->w8);
 	}
-	pthread_mutex_lock(&philo->p_geral->w8);
-	philo->p_geral->nbr_of_meals--;
-	if (philo->p_geral->nbr_of_meals == 0)
-		philo->p_geral->flag = 1;
-	pthread_mutex_unlock(&philo->p_geral->w8);
-	philo->last_meal = get_time();
-	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
+}
+
+void	check_dead(t_geral *geral)
+{
+	while (check_flag(geral))
+	{
+		check_eatean(geral);
+		if (!check_flag(geral))
+			break ;
+		check_time_to_die(geral);
+	}
 }

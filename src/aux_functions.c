@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hlindeza <hlindeza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/25 10:17:18 by hlindeza          #+#    #+#             */
-/*   Updated: 2023/10/07 14:55:15 by hlindeza         ###   ########.fr       */
+/*   Created: 2023/09/24 16:11:29 by hlindeza          #+#    #+#             */
+/*   Updated: 2023/10/11 00:57:23 by hlindeza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/philosophers.h"
+#include "../inc/philosopher.h"
 
 long	ft_atoi(char *str)
 {
@@ -21,7 +21,7 @@ long	ft_atoi(char *str)
 	res = 0;
 	i = 0;
 	sign = 1;
-	while (str[i] == ' ' || str[i] == '\t')
+	while (str[i] == ' ' || (str[i] >= '\t' && str[i] <= '\r'))
 		i++;
 	if (str[i] == '-')
 		sign = -1;
@@ -39,8 +39,8 @@ size_t	get_time(void)
 {
 	struct timeval	time;
 
-	if (gettimeofday(&time, NULL) == -1)
-		ft_error("Error, getting time\n");
+	if (gettimeofday(&time, NULL))
+		return (0);
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
@@ -50,36 +50,41 @@ void	destroy_all(t_geral *geral)
 
 	i = -1;
 	while (++i < geral->nbr_of_philos)
-		pthread_join(geral->philos[i].thread, NULL);
-	pthread_mutex_destroy(&geral->write);
-	pthread_mutex_destroy(&geral->w8);
+		pthread_join(geral->philos[i].thread, 0);
 	i = -1;
 	while (++i < geral->nbr_of_philos)
 		pthread_mutex_destroy(&geral->forks[i]);
-	free(geral->philos);
+	if (geral->locked)
+		pthread_mutex_unlock(&geral->write);
+	pthread_mutex_destroy(&geral->w8);
+	pthread_mutex_destroy(&geral->write);
+	pthread_mutex_destroy(&geral->eating);
 	free(geral->forks);
+	free(geral->philos);
 }
 
-void	print_message(size_t time, char *str, t_philo *philo)
+void	ft_usleep(size_t time)
 {
-	size_t	time_now;
+	size_t	st;
 
-	pthread_mutex_lock(&philo->p_geral->write);
-	time_now = get_time() - time;
-	printf("%zu %d %s\n", time_now, philo->id, str);
-	pthread_mutex_unlock(&philo->p_geral->write);
-}
-
-void	take_forks(t_philo *philo)
-{
-	if (philo->id % 2 == 0)
+	st = get_time();
+	while ((get_time() - st) < time)
 	{
-		lock_left_fork(philo);
-		lock_right_fork(philo);
+		usleep(time / 10);
 	}
+}
+
+void	print_message(char *str, t_philo *philo, int f)
+{
+	size_t	time;
+
+	if (!check_flag(philo->geral))
+		return ;
+	pthread_mutex_lock(&philo->geral->write);
+	time = get_time();
+	printf("%zu %d %s\n", time - philo->geral->start_time, philo->id, str);
+	if (f)
+		pthread_mutex_unlock(&philo->geral->write);
 	else
-	{
-		lock_right_fork(philo);
-		lock_left_fork(philo);
-	}
+		philo->geral->locked = 1;
 }
