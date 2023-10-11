@@ -3,7 +3,7 @@ NAME_PROJECT = philo
 SRCS = src/aux_functions.c src/init.c src/main.c src/more_functions.c src/philo.c
 OBJS = $(SRCS:.c=.o)
 
-FLAGS = -Wall -Wextra -Werror -pthread
+FLAGS = -Wall -Wextra -Werror -pthread #-g -fsanitize=address
 
 all: $(NAME_PROJECT)
 
